@@ -1,4 +1,4 @@
-# Music Big Data Processing and Analysis
+# BigMu：Music Big Data Processing and Analysis
 
 With the rapid development of the digital music industry, the scale and complexity of music data are continuously increasing. Major music platforms and streaming services generate vast amounts of user behavior data, song metadata, lyrics, and more every day. These data hold significant commercial value and research potential, such as user preference analysis, music recommendation systems, and artist popularity analysis.
 
