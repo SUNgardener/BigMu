@@ -1,1 +1,6 @@
-com/bigmu/App.class
+com/bigmu/HDF5Mapper.class
+com/bigmu/HDF5InputFormat.class
+com/bigmu/HDF5InputFormat$HDF5RecordReader.class
+com/bigmu/HDF5Reducer.class
+com/bigmu/H5ToString.class
+com/bigmu/HDF5Driver.class
