@@ -12,7 +12,7 @@ public class HDF5Reducer extends Reducer<Text, Text, Text, Text> {
         Iterator<Text> iterator = values.iterator();
         if (iterator.hasNext()) {
             Text firstValue = iterator.next();
-            context.write(new Text(), firstValue);
+            context.write(null, firstValue);
         }
     }
 }

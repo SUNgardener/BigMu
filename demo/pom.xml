@@ -66,6 +66,13 @@
         <artifactId>jhdf</artifactId>
         <version>0.6.0</version> <!-- 请检查最新版本 -->
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.mahout/mahout-mr -->
+    <dependency>
+      <groupId>org.apache.mahout</groupId>
+      <artifactId>mahout-mr</artifactId>
+      <version>0.13.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>
