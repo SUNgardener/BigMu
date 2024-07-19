@@ -7,7 +7,22 @@ import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+ * This is the Reducer class that joins multiple datasets based on song_id.
+ * 
+ * Design approach:
+ *     1. Set variables songsOutputPath and usersOutputPath to represent the paths for outputting songs and users datasets.
+ *        Get these paths using the setup() method.
+ *     2. In the reduce() method, check if the current key has records from songs and users datasets.
+ *        If so, output these records to the corresponding datasets.
+ * 
+ * Input format: key is song_id, value is the record type and record content.
+ * Output format: key is null, value is the record content.
+ * Data type: Text
+ * 
+ * songs dataset format: song_id,track_id,song_name,artist_id,artist_name,album_id,album_name,duration,year
+ * users dataset format: user_id,song_id,play_count
+ */
 public class JoinWithSongIdReducer extends Reducer<Text, Text, Text, Text> {
 
     private MultipleOutputs<Text, Text> multipleOutputs;

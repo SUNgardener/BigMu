@@ -16,22 +16,24 @@ import java.util.StringTokenizer;
 
 
 /**
- *  Map阶段
- *  输入: 文本文件中的每一行。
- *  处理:
- *   在setup方法中处理单词表行:
- *      读取输入分片。
- *      查找以%开头的行，解析并存储单词到列表或数组中。
- *   在map方法中处理普通行:
- *      忽略以#或%开头的行。
- *      对于普通行，使用存储的单词表将单词下标转换为实际单词，并输出相应的键值对。
+ *  Map phase
+ *  Input: Each line in the text file.
+ *  Processing:
+ *   In the setup method, process the word list line:
+ *      Read input splits.
+ *      Look for lines starting with %, parse and store words in a list or array.
+ *   In the map method, process regular lines:
+ *      Ignore lines starting with # or %.
+ *      For regular lines, use the stored word list to convert word indexes to actual words and output the corresponding key-value pairs.
  *
- *  Reduce阶段
- *  输入: Map阶段输出的键值对。
- *  处理:
- *     对于每个track_id，聚合所有的单词计数对。
- *     将所有单词计数对格式化为[(word1:count1),(word2:count2),...]的形式。
- *     输出: 每个track_id及其对应的单词计数列表。
+ *  Reduce phase
+ *  Input: Key-value pairs output from the map phase.
+ *  Processing:
+ *     For each track_id, aggregate all word count pairs.
+ *     Format all word count pairs as [(word1:count1),(word2:count2),...] and output.
+ *     Output: track_id and its corresponding word count list.
+ * 
+ * Data type: Text
  */
 
 public class LyricsCountWorker {
@@ -48,7 +50,7 @@ public class LyricsCountWorker {
             String line = value.toString();
             if(line.startsWith("%")) {
                 String[] words = line.substring(1).split(",");
-                wordList.add("DUMMY"); // 占位符
+                wordList.add("DUMMY"); // Placeholder
                 for (String w : words) {
                     wordList.add(w);
                 }
@@ -57,8 +59,8 @@ public class LyricsCountWorker {
             if (!line.startsWith("#") && !line.startsWith("%")) {
                 StringTokenizer itr = new StringTokenizer(line, ",");
                 if (itr.hasMoreTokens()) {
-                    trackId.set(itr.nextToken()); // 获取track_id
-                    itr.nextToken(); // 跳过mxm_track_id
+                    trackId.set(itr.nextToken()); // Get track_id
+                    itr.nextToken(); // Skip mxm_track_id
                     while (itr.hasMoreTokens()) {
                         String[] wordCount = itr.nextToken().split(":");
                         int wordIndex = Integer.parseInt(wordCount[0]);
@@ -88,7 +90,7 @@ public class LyricsCountWorker {
             }
             wordCountsBuilder.append("]");
             
-            // 只输出 wordCounts 不输出 key
+            // Only output wordCounts, do not output key
             context.write(new Text(""), new Text(wordCountsBuilder.toString()));
         }
     }
@@ -103,7 +105,7 @@ public class LyricsCountWorker {
         job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        // 设置自定义的 OutputFormat 类
+        // Set custom OutputFormat class
         job.setOutputFormatClass(CustomTextOutputFormat.class);
 
         System.exit(job.waitForCompletion(true) ? 0 : 1);

@@ -15,9 +15,19 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+/*
+ * This file is used to convert the song data in the HDF5 file to a string for storage.
+ * 
+ * Design approach:
+ *      1. Design a Map to store the attributes of the song, where the key is the attribute name and the value is the attribute value.
+ *      2. Recursively traverse the tree structure of the HDF5 file to find the songs dataset.
+ *      3. Extract the attributes of the song from the songs dataset.
+ *      4. Convert the attributes of the song to a string.
+ * 
+ */
 public class H5ToString {
 
-    private Map<String, String> allowedItems = new HashMap<>(); // 直接打表
+    private Map<String, String> allowedItems = new HashMap<>(); // Create a Map to store the attributes of the song
     
     public H5ToString() {
         allowedItems.put("song_id", "");
@@ -37,7 +47,7 @@ public class H5ToString {
 
     public String getResult(String filename) throws IOException {
         
-        // 配置Hadoop
+        // Configure Hadoop
         Configuration configuration = new Configuration();
         configuration.set("fs.defaultFS", "hdfs://localhost:9000");
         FileSystem fs = FileSystem.get(configuration);
@@ -45,7 +55,7 @@ public class H5ToString {
 
         String result = "";
         try (HdfFile hdfFile = HdfFile.fromInputStream(in)) {
-            // 递归输出根节点及其子节点的所有属性
+            // Recursively print all attributes of the root node and its children
             recursivePrintGroup(hdfFile);
             result = getSongAttribute();
         
@@ -55,41 +65,41 @@ public class H5ToString {
         return result;
     }
 
-	// 注意H5文件的树状结构，递归遍历所有节点
+    // Note the tree structure of the H5 file, recursively traverse all nodes
     private void recursivePrintGroup(Group group) {
-		
+        
         for (Node node : group) {
   
             if (node instanceof Group) {
-				recursivePrintGroup((Group) node);
-			}
+                recursivePrintGroup((Group) node);
+            }
             
             if(node instanceof Dataset) {
                 if(node.getName().equals("songs")) {
                     Dataset dataset = (Dataset) node;
                     Object data = dataset.getData();
                     
-                    // song所需数据放在复合数据集类型
+                    // Song data is stored in a compound dataset type
                     if (dataset.isCompound()) { 
                         
-                        Map<String, Object> compoundData = (Map<String, Object>) data;  // 按照给出的 getData() 有关的接口信息进行强制类型转换
+                        Map<String, Object> compoundData = (Map<String, Object>) data;  // Perform type casting according to the interface information provided by getData()
                         for(Map.Entry<String, Object> entry : compoundData.entrySet()) {
                             String key = entry.getKey();
-                            if(!allowedItems.containsKey(key)) { // 不在allowedItems中的属性不处理
+                            if(!allowedItems.containsKey(key)) { // Do not process attributes not in allowedItems
                                 continue;
                             }
 
                             Object value = entry.getValue();
-                            String valuString = valueToString(value); // 需要自行转换
-                            allowedItems.put(key, valuString); 
+                            String valueString = valueToString(value); // Need to convert manually
+                            allowedItems.put(key, valueString); 
                         }
                     }                   
 
 
                 }
             } 
-		}
-	}
+        }
+    }
 
     private static String valueToString(Object value) {
         String result;
@@ -104,12 +114,12 @@ public class H5ToString {
             return value.toString();
         }
 
-        // 移除字符串开头和结尾的[]
+        // Remove the leading and trailing [] from the string
         return result.substring(1, result.length() - 1);
     }
 
     private String getSongAttribute() {
-        // ATTENTION: 按照allowedItems中的顺序拼接字符串. Map是无序的!
+        // ATTENTION: Concatenate the strings in the order of allowedItems. Map is unordered!
         String result = "";
         result += allowedItems.get("song_id") + ",";
         result += allowedItems.get("track_id") + ",";

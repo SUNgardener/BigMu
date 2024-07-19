@@ -14,17 +14,17 @@ import java.util.StringTokenizer;
 
 
 /**
- *  Map阶段
- *  输入: 文本文件中的每一行。
- *  处理:
- *   在map方法中处理普通行: 输入格式 track_id\tgenre\n
- *      忽略以#开头的行。
- *      对于普通行，输出键值对 (track_id, genre)。 
+ *  Map phase
+ *  Input: Each line in the text file.
+ *  Processing:
+ *    Process regular lines in the map method: input format track_id\tgenre\n
+ *      Ignore lines starting with #.
+ *      For regular lines, output key-value pairs (track_id, genre).
  *
- *  Reduce阶段
- *  输入: Map阶段输出的键值对。
- *  处理:
- *     直接输出键值对。
+ *  Reduce phase
+ *  Input: Key-value pairs output from the map phase.
+ *  Processing:
+ *    Directly output key-value pairs.
  */
 
 public class GenresWorker {

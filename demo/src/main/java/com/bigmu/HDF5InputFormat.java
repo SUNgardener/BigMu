@@ -19,12 +19,15 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
-
+/*
+ * Note: This file is not applied to the project, it is for reference only
+ * This file is the unselected implementation because reading HDF5 files requires the use of a specialized library, and reading HDF5 files is slow
+ */
 public class HDF5InputFormat extends FileInputFormat<LongWritable, Text> {
 
     @Override
     protected boolean isSplitable(JobContext context, Path filename) {
-        return false; // HDF5 文件不可分割
+        return false; // HDF5 files are not splittable
     }
 
     @Override
@@ -52,17 +55,17 @@ public class HDF5InputFormat extends FileInputFormat<LongWritable, Text> {
                 Path filePath = fileSplit.getPath();
                 FileSystem fs = filePath.getFileSystem(conf);
 
-                // 创建一个临时文件来存储HDF5文件
+                // Create a temporary file to store the HDF5 file
                 java.nio.file.Path tempFile = Files.createTempFile("hdf5_temp", ".h5");
 
-                // 将HDFS文件复制到本地临时文件
+                // Copy the HDFS file to the local temporary file
                 try (java.io.InputStream in = fs.open(filePath)) {
                     java.nio.file.Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
 
                     try (HdfFile hdfFile = new HdfFile(tempFile.toFile())) {
                         Map<String, Object> attributes = extractAttributes(hdfFile);
 
-                        // 将数据格式化为 CSV 格式
+                        // Format the data as CSV format
                         String result = String.format("%s,%s,%s,%s,%s,%s,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%d",
                             attributes.get("song_id"),
                             attributes.get("track_id"),
@@ -85,7 +88,7 @@ public class HDF5InputFormat extends FileInputFormat<LongWritable, Text> {
                         return true;
                     }
                 } finally {
-                    // 删除临时文件
+                    // Delete the temporary file
                     Files.deleteIfExists(tempFile);
                 }
             }
@@ -109,7 +112,7 @@ public class HDF5InputFormat extends FileInputFormat<LongWritable, Text> {
 
         @Override
         public void close() throws IOException {
-            // 不需要额外的关闭操作
+            // No additional close operation is needed
         }
 
         private Map<String, Object> extractAttributes(HdfFile hdfFile) {

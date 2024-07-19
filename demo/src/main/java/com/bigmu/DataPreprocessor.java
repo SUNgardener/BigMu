@@ -14,8 +14,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * This class represents a data preprocessor that processes input features and labels files.
+ */
 public class DataPreprocessor {
 
+    /**
+     * Main method, the entry point of the program.
+     *
+     * @param args Command line arguments, including input features file path, input labels file path,
+     *             output features file path, and output labels file path.
+     * @throws IOException If an error occurs while reading or writing files.
+     */
     public static void main(String[] args) throws IOException {
         if (args.length != 4) {
             System.err.println("Usage: DataPreprocessor <input-features-file> <input-labels-file> <output-features-path> <output-labels-path>");
@@ -42,7 +52,7 @@ public class DataPreprocessor {
                 String trackId = parts[0];
                 String[] wordCounts = parts[1].replace("[(", "").replace(")]", "").split("\\),\\(");
 
-                Vector vector = new RandomAccessSparseVector(Integer.MAX_VALUE);//构建一个长度为Integer.MAX_VALUE的稀疏向量
+                Vector vector = new RandomAccessSparseVector(Integer.MAX_VALUE);
                 for (String wc : wordCounts) {
                     String[] wcParts = wc.split(":");
                     int word = Integer.parseInt(wcParts[0].trim());

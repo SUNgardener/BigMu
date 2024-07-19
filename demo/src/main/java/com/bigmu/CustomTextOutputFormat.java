@@ -9,24 +9,23 @@ import org.apache.hadoop.conf.Configuration;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-
-// 自定义 OutputFormat 类
+// Custom OutputFormat class
 public class CustomTextOutputFormat extends FileOutputFormat<Text, Text> {
     @Override
     public RecordWriter<Text, Text> getRecordWriter(TaskAttemptContext job) throws IOException, InterruptedException {
-        // 获取配置
+        // Get the configuration
         Configuration conf = job.getConfiguration();
-        // 创建文件系统对象
+        // Create a file system object
         FileSystem fs = FileSystem.get(conf);
-        // 创建输出文件路径
+        // Create the output file path
         Path file = getDefaultWorkFile(job, ".txt");
-        // 创建输出流
+        // Create the output stream
         DataOutputStream out = fs.create(file, false);
         
         return new LineRecordWriter(out);
     }
 
-    // 自定义 RecordWriter 类
+    // Custom RecordWriter class
     protected static class LineRecordWriter extends RecordWriter<Text, Text> {
         private DataOutputStream out;
 
@@ -36,7 +35,7 @@ public class CustomTextOutputFormat extends FileOutputFormat<Text, Text> {
 
         @Override
         public void write(Text key, Text value) throws IOException, InterruptedException {
-            // 直接写入 value，每个 value 后面跟一个换行符
+            // Write the value directly, followed by a newline character
             out.write(value.toString().getBytes("UTF-8"));
             out.write("\n".getBytes("UTF-8"));
         }

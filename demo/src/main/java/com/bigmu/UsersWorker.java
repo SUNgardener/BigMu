@@ -14,16 +14,16 @@ import java.util.StringTokenizer;
 
 
 /**
- *  Map阶段
- *  输入: 文本文件中的每一行。
- *  处理:
- *   在map方法中处理普通行: 输入格式 user_id\tsong_id\tplay_count\n
- *      对于普通行，输出键值对 (user_id, <song_id, play_count>)。 
+ *  Map phase
+ *  Input: Each line in the text file.
+ *  Processing:
+ *   Process regular lines in the map method: Input format user_id\tsong_id\tplay_count\n
+ *      For regular lines, output key-value pairs (user_id, <song_id, play_count>).
  *
- *  Reduce阶段
- *  输入: Map阶段输出的键值对。
- *  处理:
- *     直接输出键值对。
+ *  Reduce phase
+ *  Input: Key-value pairs from the map phase.
+ *  Processing:
+ *     Directly output key-value pairs.
  */
 
 public class UsersWorker {
@@ -59,7 +59,7 @@ public class UsersWorker {
         job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        // 设置自定义的 OutputFormat 类
+        // Set custom OutputFormat class
         job.setOutputFormatClass(CustomTextOutputFormat.class);
 
         System.exit(job.waitForCompletion(true) ? 0 : 1);
